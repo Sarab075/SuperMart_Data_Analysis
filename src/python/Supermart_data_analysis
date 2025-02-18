@@ -1,0 +1,29 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+df= pd.read_csv('supermart_final.csv')
+print("Initial Data Overview:")
+print(df.head())
+print("\nMissing Values:")
+print(df.isnull().sum())
+# 2. Handling Missing Data
+df.fillna({
+    "customer_type": "Unknown",
+    "gender": "Unknown",
+    "product_line": "Miscellaneous",
+    "payment": "Unknown",
+    "total": df["total"].median(),
+    "rating": df["rating"].median()
+}, inplace=True)
+# 3. Removing Duplicates
+df.drop_duplicates(inplace=True)
+# 4. Standardizing Data Formats
+df["date_time"] = pd.to_datetime(df["date_time"], errors='coerce')
+# Convert categorical columns to string type
+df["customer_type"] = df["customer_type"].astype("string").str.title()
+df["gender"] = df["gender"].astype("string").str.title()
+df["product_line"] = df["product_line"].astype("string").str.title()
+df["payment"] = df["payment"].astype("string").str.title()
+df["total"] = df["total"].round(2)
+df.info()
+df.to_csv("supermart_cleaned.csv")
